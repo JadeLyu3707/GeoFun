@@ -1,0 +1,9 @@
+numpy
+scipy
+h5py
+matplotlib
+hydra-core
+omegaconf
+PyYAML
+tqdm
+tensorflow-cpu  # only for scripts/tfrecord_to_h5.py

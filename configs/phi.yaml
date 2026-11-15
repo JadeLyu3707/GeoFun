@@ -1,0 +1,39 @@
+seed: 0
+experiment: ${data.split_name}_${data.traj}_t${data.t}_obstacle${data.with_obstacle}
+root_path: /scratch/yl12783/project/phi_geometry
+
+hydra:
+  run:
+    dir: ${root_path}/outputs/${experiment}/${now:%Y-%m-%d_%H-%M-%S}
+
+data:
+  _target_: data.PlateSnapshot
+  base_path: /scratch/yl12783/datasets/meshgraphnets
+  dataset_name: deforming_plate
+  split_name: test
+  traj: traj_00000
+  t: 0
+  with_obstacle: True      # include the actuator's nodes in x_i and its tetrahedra in the ground truth
+
+model:                     # used by eval.py; tau: null -> read experiments/<experiment>/best.yaml
+  sigma: 0.010
+  tau: null
+
+grid:
+  _target_: tuner.VoxelGrid
+  res: 0.001               # voxel size h [m]
+  pad: 0.05                # margin around the points' bounding box [m]
+
+tuner:
+  _target_: tuner.Tuner
+  sigmas: [0.004, 0.006, 0.008, 0.010, 0.012]
+  max_miss: 0.001          # "solid": at most this fraction of the true volume may have phi <= 0
+  n_tau_candidates: 201    # "min-error": tau candidates = quantiles of S over inside voxels
+  tau_quantile_max: 0.5
+  truncate: 4.0            # kernel truncated at truncate * sigma
+
+evaler:
+  _target_: tuner.Evaler
+  out_folder:
+  truncate: 4.0
+  dpi: 95
