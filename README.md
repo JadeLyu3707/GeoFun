@@ -7,7 +7,7 @@ $$
 \qquad \hat\Omega=\{\phi>0\}.
 $$
 
-The repository chooses $(\sigma,\tau)$ and measures the error of $\hat\Omega$ against the true geometry, which is the union of the dataset's tetrahedra. The method, the loss and the slice plots are described in [docs/methodology.md](docs/methodology.md).
+The repository chooses $(\sigma,\tau)$ and measures the error of $\hat\Omega$ against the true geometry, which is the union of the dataset's tetrahedra. Short summary: [docs/report.md](docs/report.md). The method, the loss and the slice plots are described in [docs/methodology.md](docs/methodology.md).
 
 Code layout follows [TANTE](https://github.com/zwu88/TANTE): Hydra configs, with `data/`, `models/` and `tuner/` as separate packages. Nothing is trained: $\sigma$ is grid-searched, and $\tau$ is set in closed form for each $\sigma$.
 
