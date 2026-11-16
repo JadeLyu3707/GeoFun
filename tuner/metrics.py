@@ -38,6 +38,9 @@ def geometry_metrics(pred: np.ndarray, gt: GroundTruth, dv: float) -> Dict[str, 
         "in_max": float(gt.d_in[fn].max()) if fn.any() else 0.0,
     }
     m["loss"] = m["extra"] + m["missed"]
+    if gt.surface_area > 0:
+        # extra volume spread evenly over the true surface = mean thickness of the outer error layer
+        m["out_mean"] = float(fp.sum() * dv / gt.surface_area)
     for name, body, near in [("plate", gt.plate, ~gt.near_obstacle), ("obstacle", gt.obstacle, gt.near_obstacle)]:
         if body.any():
             m[f"{name}_extra"] = float((fp & near).sum() / body.sum())

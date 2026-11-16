@@ -1,0 +1,38 @@
+seed: 0
+experiment: ${data.split_name}_${data.traj}_t${data.t}_obstacle${data.with_obstacle}_adaptive
+root_path: /scratch/yl12783/project/phi_geometry
+
+hydra:
+  run:
+    dir: ${root_path}/outputs/${experiment}/${now:%Y-%m-%d_%H-%M-%S}
+
+data:
+  _target_: data.PlateSnapshot
+  base_path: /scratch/yl12783/datasets/meshgraphnets
+  dataset_name: deforming_plate
+  split_name: test
+  traj: traj_00000
+  t: 0
+  with_obstacle: True
+
+grid:
+  _target_: tuner.VoxelGrid
+  res: 0.001
+  pad: 0.10                # larger than before: sigma_i can reach several cm
+
+tuner:
+  _target_: tuner.AdaptiveTuner
+  ds: [3, 2]               # first entry is the primary d used to pick the best setting
+  ks: [12, 16, 20]
+  cs: [0.5, 0.75, 1.0, 1.5]
+  fixed_taus: [0.3, 0.4, 0.5, 0.6, 0.7]
+  clamp: [0.25, 4.0]       # sigma_i clamped to [0.25, 4] x median(sigma_i)
+  max_miss: 0.001          # "solid": at most this fraction of the true volume may have phi <= 0
+  n_tau_candidates: 201
+  tau_quantile_max: 0.5
+  baseline_sigma: 0.010    # earlier fixed-width field, for comparison
+
+evaler:
+  _target_: tuner.Evaler
+  out_folder:
+  dpi: 95

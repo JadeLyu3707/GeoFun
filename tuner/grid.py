@@ -57,9 +57,11 @@ class GroundTruth:
     d_in: np.ndarray         # dist(g, outside) for g inside, 0 outside
     near_obstacle: np.ndarray  # outside voxels closer to the obstacle than to the plate
     volume: float            # voxelized |Omega|
+    surface_area: float = 0.0  # |boundary of Omega| from the tetrahedra (0 = unknown)
 
 
-def build_ground_truth(grid: VoxelGrid, tets: np.ndarray, is_obstacle_tet: np.ndarray) -> GroundTruth:
+def build_ground_truth(grid: VoxelGrid, tets: np.ndarray, is_obstacle_tet: np.ndarray,
+                       surface_area: float = 0.0) -> GroundTruth:
     plate = grid.rasterize(tets[~is_obstacle_tet])
     obstacle = grid.rasterize(tets[is_obstacle_tet]) if is_obstacle_tet.any() else np.zeros(grid.shape, bool)
     inside = plate | obstacle
@@ -69,4 +71,5 @@ def build_ground_truth(grid: VoxelGrid, tets: np.ndarray, is_obstacle_tet: np.nd
         near_obstacle = ndimage.distance_transform_edt(~obstacle) < ndimage.distance_transform_edt(~plate)
     else:
         near_obstacle = np.zeros(grid.shape, bool)
-    return GroundTruth(inside, plate, obstacle, d_out, d_in, near_obstacle, float(inside.sum() * grid.dv))
+    return GroundTruth(inside, plate, obstacle, d_out, d_in, near_obstacle, float(inside.sum() * grid.dv),
+                       surface_area)

@@ -14,6 +14,15 @@ def tet_volumes(P: np.ndarray) -> np.ndarray:
     return np.abs(np.einsum("ij,ij->i", np.cross(P[:, 1] - P[:, 0], P[:, 2] - P[:, 0]), P[:, 3] - P[:, 0])) / 6
 
 
+def boundary_area(X: np.ndarray, tet_idx: np.ndarray) -> float:
+    """Total area of the faces that belong to exactly one tetrahedron (= the surface of the union)."""
+    faces = np.concatenate([tet_idx[:, f] for f in ([0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3])])
+    faces = np.sort(faces, axis=1)
+    uniq, counts = np.unique(faces, axis=0, return_counts=True)
+    F = X[uniq[counts == 1]]
+    return float(0.5 * np.linalg.norm(np.cross(F[:, 1] - F[:, 0], F[:, 2] - F[:, 0]), axis=1).sum())
+
+
 @dataclass
 class SnapshotMetadata:
 
@@ -29,6 +38,7 @@ class SnapshotMetadata:
     volume: float
     plate_volume: float
     obstacle_volume: float
+    surface_area: float
 
 
 class PlateSnapshot:
@@ -84,6 +94,7 @@ class PlateSnapshot:
             volume=float(vol.sum()),
             plate_volume=float(vol[~self.is_obstacle_tet].sum()),
             obstacle_volume=float(vol[self.is_obstacle_tet].sum()),
+            surface_area=boundary_area(X, tet_idx),
         )
 
     @property

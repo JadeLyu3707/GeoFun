@@ -1,0 +1,17 @@
+#!/bin/bash
+#SBATCH --job-name=phi_adaptive
+#SBATCH --account=torch_pr_1317_cds
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64GB
+#SBATCH --time=01:00:00
+#SBATCH --output=/scratch/yl12783/project/phi_geometry/slurm_logs/%x_%j.out
+
+# Hydra overrides are passed through, e.g.
+#   sbatch slurm/tune_adaptive.sbatch tuner.ks=[16] tuner.cs=[1.0]
+# (login nodes have a 3 GB memory cap, too small for the 3D grid)
+
+module purge
+export OMP_NUM_THREADS=8
+cd /home/yl12783/phi-geometry
+/scratch/yl12783/envs/mgn/bin/python tune_adaptive.py "$@"

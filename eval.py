@@ -34,7 +34,8 @@ def main(cfg: DictConfig):
 
     snapshot: PlateSnapshot = instantiate(cfg.data)
     grid: VoxelGrid = instantiate(cfg.grid).build(snapshot.points)
-    gt = build_ground_truth(grid, snapshot.tets, snapshot.is_obstacle_tet)
+    gt = build_ground_truth(grid, snapshot.tets, snapshot.is_obstacle_tet,
+                            snapshot.metadata.surface_area)
 
     evaler: Evaler = instantiate(cfg.evaler, out_folder=out_folder)
     m = evaler.Eval(snapshot, grid, gt, sigma, tau)

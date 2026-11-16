@@ -31,7 +31,8 @@ def main(cfg: DictConfig):
 
     logger.info(f"Instantiate grid {cfg.grid._target_}")
     grid: VoxelGrid = instantiate(cfg.grid).build(snapshot.points)
-    gt = build_ground_truth(grid, snapshot.tets, snapshot.is_obstacle_tet)
+    gt = build_ground_truth(grid, snapshot.tets, snapshot.is_obstacle_tet,
+                            snapshot.metadata.surface_area)
     logger.info(f"{grid}, voxelized volume {gt.volume:.4e} (true {snapshot.metadata.volume:.4e})")
 
     logger.info(f"Instantiate tuner {cfg.tuner._target_}")
