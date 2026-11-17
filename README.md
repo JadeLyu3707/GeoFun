@@ -56,6 +56,6 @@ python eval.py                                             # uses experiments/<e
 |---|---|---|---|---|---|
 | 0.010 | 0.0578 | 0.844 | 0.542 | 0.1 % | 4.0 / 12.0 mm |
 
-![slices](docs/slices_test_traj00000_t0.png)
+![slices](docs/adaptive_k6_slices_test_traj00000_t0.png)
 
 In the figure, black is the true boundary and green is $\phi=0$. The full table and the discussion of why the error floor is high are in [docs/methodology.md](docs/methodology.md).
