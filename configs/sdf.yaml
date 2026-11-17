@@ -1,0 +1,26 @@
+seed: 0
+
+hydra:
+  run:
+    dir: /scratch/yl12783/project/phi_geometry/outputs/sdf/${now:%Y-%m-%d_%H-%M-%S}
+
+builder:
+  _target_: sdf.SDFBuilder
+  base_path: /scratch/yl12783/datasets/meshgraphnets
+  out_path: /scratch/yl12783/datasets/meshgraphnets/deforming_plate/sdf_R${builder.R}_t${builder.t}
+  dataset_name: deforming_plate
+  splits: [train, valid, test]
+  t: 0                   # time step of every trajectory used as the sample
+  R: 64                  # grid points per axis
+  margin: 0.05           # bbox margin on each side, as a fraction of the extent
+  nsamples: 5            # rays voted for the inside/outside sign (odd)
+  max_trajectories: -1   # per split; -1 = all
+
+verify:
+  only: False           # True: skip building, verify the files already in builder.out_path
+  all_samples: True      # exact sign check on every grid point of every sample
+  n_samples: 50          # used if all_samples is False
+  n_dist_samples: 20     # samples whose |SDF| is checked against brute-force point-to-triangle distance
+  n_dist_points: 2000
+  n_plots: 3             # random samples plotted
+  always_plot: [test, traj_00000]

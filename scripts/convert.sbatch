@@ -8,5 +8,6 @@
 #SBATCH --output=/scratch/yl12783/project/phi_geometry/slurm_logs/%x_%j.out
 
 module purge
+export LD_LIBRARY_PATH=/scratch/yl12783/envs/mgn/lib:$LD_LIBRARY_PATH   # libEGL/libGL for open3d (missing on compute nodes)
 cd /home/yl12783/phi-geometry
 /scratch/yl12783/envs/mgn/bin/python scripts/tfrecord_to_h5.py "$@"

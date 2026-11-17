@@ -12,6 +12,7 @@
 # (login nodes have a 3 GB memory cap, too small for the 3D grid)
 
 module purge
+export LD_LIBRARY_PATH=/scratch/yl12783/envs/mgn/lib:$LD_LIBRARY_PATH   # libEGL/libGL for open3d (missing on compute nodes)
 export OMP_NUM_THREADS=8
 cd /home/yl12783/phi-geometry
 /scratch/yl12783/envs/mgn/bin/python tune_adaptive.py "$@"
